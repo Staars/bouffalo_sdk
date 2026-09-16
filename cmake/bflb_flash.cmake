@@ -24,7 +24,12 @@ endif()
 
 if(EXISTS "${BL_SDK_BASE}/tools/bflb_tools")
     set(FULL_FLASH_TOOL ON)
-    set(BL_FW_POST_PROC ${BL_SDK_BASE}/tools/bflb_tools/bflb_fw_post_proc/bflb_fw_post_proc${TOOL_SUFFIX})
+    find_program(BL_FW_POST_PROC_PYTHON bflb-fw-post-proc)
+    if(BL_FW_POST_PROC_PYTHON)
+        set(BL_FW_POST_PROC ${BL_FW_POST_PROC_PYTHON})
+    else()
+        set(BL_FW_POST_PROC ${BL_SDK_BASE}/tools/bflb_tools/bflb_fw_post_proc/bflb_fw_post_proc${TOOL_SUFFIX})
+    endif()
     set(BL_FW_POST_PROC_CONFIG --chipname=${CHIP} --imgfile=${BIN_FILE} --appkeys=shared)
 
     message(STATUS "Use full firmware tool: ${BL_FW_POST_PROC}")

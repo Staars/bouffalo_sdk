@@ -7,6 +7,7 @@
 #include <utils_list.h>
 #include "bflb_pm.h"
 #include <assert.h>
+#include <stdio.h>
 
 enum PM_STATE {
     PM_STATE_INITED = 0,

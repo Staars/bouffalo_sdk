@@ -116,6 +116,7 @@ SECTIONS
 
         *(.srodata)
         *(.srodata.*)
+        *(.gcc_except_table .gcc_except_table.*)
 
         KEEP(*(.bleromro))
 

@@ -62,7 +62,7 @@ static void async_event_loop_wake(void)
         wait = 0;
     }
 
-    xReturn = xTimerPendFunctionCall(async_event_handler, (void *)NULL, NULL, wait);
+    xReturn = xTimerPendFunctionCall(async_event_handler, (void *)NULL, 0U, wait);
     configASSERT(xReturn == pdPASS);
 }
 
@@ -156,4 +156,3 @@ long platform_rand(void)
 {
     return random();
 }
-
