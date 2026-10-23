@@ -28,11 +28,11 @@ abort(void) {
     while(1);
 }
 
-#if defined(__PICOLIBC__)
+/* Prebuilt Wi-Fi archives may use Picolibc's compact assertion ABI even
+ * when the application toolchain supplies Newlib. Keep failure handling. */
 void __attribute__ ((noreturn))
 __assert_no_args(void)
 {
     printf("Assertion Failed\r\n");
     abort();
 }
-#endif

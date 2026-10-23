@@ -1322,14 +1322,15 @@ static inline void swap_(void *a, void *b, size_t size)
 
 void wpa_selection_sort(void *base, size_t nmemb, size_t size, int (*compare)(const void *, const void *))
 {
+    u8 *bytes = base;
     size_t i, j, m_i;
     for (i = 0; i < nmemb - 1; i++) {
         m_i = i;
         for (j = i + 1; j < nmemb; j++)
-            if (compare(base + j * size, base + m_i * size) < 0)
+            if (compare(bytes + j * size, bytes + m_i * size) < 0)
                 m_i = j;
         if (m_i != i)
-            swap_(base + i * size, base + m_i * size, size);
+            swap_(bytes + i * size, bytes + m_i * size, size);
     }
 }
 #endif

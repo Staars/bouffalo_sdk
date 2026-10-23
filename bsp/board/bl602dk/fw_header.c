@@ -104,7 +104,11 @@ __attribute__((section(".fw_header"))) struct bootheader_t fw_header = {
     .boot_cfg.bval.notload_in_bootrom = 0x0, /* [10]        not load this img in bootrom */
     .boot_cfg.bval.aes_region_lock = 0x0,    /* [11]        aes region lock */
     .boot_cfg.bval.cache_way_disable = 0x3,  /* [15: 12]    cache way disable info*/
+#ifdef CONFIG_ENABLE_IMG_CRC
+    .boot_cfg.bval.crc_ignore = 0x0,         /* [16]        ignore crc */
+#else
     .boot_cfg.bval.crc_ignore = 0x1,         /* [16]        ignore crc */
+#endif
     .boot_cfg.bval.hash_ignore = 0x0,        /* [17]        hash crc */
     .boot_cfg.bval.halt_ap = 0x0,            /* [18]        halt ap */
     .boot_cfg.bval.rsvd19_31 = 0x0,          /* [31:19]     rsvd */

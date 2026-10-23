@@ -16,6 +16,14 @@ config WIFI6
     help
       Build the Wi-Fi 6 MAC software and integration layer.
 
+config WIFI6_WPS
+    bool "Wi-Fi 6 Wi-Fi Protected Setup"
+    depends on WIFI6
+    default y
+    help
+      Build WPS enrollee, registrar and EAP-WSC support. Disable for images
+      that provision credentials directly. Wi-Fi Direct requires WPS.
+
 config WL80211
     bool "WL80211 Wi-Fi interface"
     default n

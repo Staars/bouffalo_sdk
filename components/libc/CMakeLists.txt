@@ -6,7 +6,7 @@ if(CONFIG_POSIX)
 sdk_add_include_directories(./posix)
 endif()
 
-if("${CHIP}" STREQUAL "bl618dg" AND "${CPU_MODEL}" STREQUAL "b0")
+if(CONFIG_PICOLIBC)
     sdk_add_include_directories(picolibc)
     sdk_library_add_sources(picolibc/port_errno.c)
     sdk_library_add_sources(picolibc/port_libcpp.c)

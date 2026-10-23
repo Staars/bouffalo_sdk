@@ -51,6 +51,11 @@ endif()
 
 if(CONFIG_GCC_COMPILE_LTO)
     sdk_add_compile_options(-flto)
+    sdk_add_link_options(-flto)
+else()
+    # Fat SDK archives may contain LTO bytecode from an older GCC release.
+    # Use their native code when link-time optimization was not selected.
+    sdk_add_link_options(-fno-lto)
 endif()
 
 sdk_add_link_options(
@@ -58,7 +63,6 @@ sdk_add_link_options(
     -Wl,--gc-sections
     -nostartfiles
     -fms-extensions
-    -flto
     -ffunction-sections
     -fdata-sections
     -Wl,--print-memory-usage
@@ -68,7 +72,7 @@ if(CONFIG_GCC_LINK_NO_RELAX)
     sdk_add_link_options(-Wl,--no-relax)
 endif()
 
-if("${CHIP}" STREQUAL "bl618dg" AND "${CPU_MODEL}" STREQUAL "b0")
+if(CONFIG_PICOLIBC)
     sdk_add_link_options(
         --specs=picolibc.specs
     )

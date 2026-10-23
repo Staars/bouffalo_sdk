@@ -37,6 +37,8 @@ int hostapd_ctrl_iface_pmksa_list_mesh(struct hostapd_data *hapd,
 				       const u8 *addr, char *buf, size_t len);
 void * hostapd_ctrl_iface_pmksa_create_entry(const u8 *aa, char *cmd);
 
+int hostapd_ctrl_iface_acl_enable(struct hostapd_data *hapd,
+				  const char *txtaddr);
 int hostapd_ctrl_iface_acl_del_mac(struct mac_acl_entry **acl, int *num,
                       const char *txtaddr);
 void hostapd_ctrl_iface_acl_clear_list(struct mac_acl_entry **acl,

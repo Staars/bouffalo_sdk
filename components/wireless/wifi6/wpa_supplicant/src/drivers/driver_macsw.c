@@ -453,10 +453,10 @@ free_payload:
 	rtos_free(res.payload);
 }
 
-static void _wpa_macsw_driver_process_scan_ie_buffer(int bssid_index, u8* dst, u8*
+static void _wpa_macsw_driver_process_scan_ie_buffer(int bssid_index, u8* dst, const u8*
 								ref_ssid_ie, u8* multi_ssid_ie, u8 *ie, int origin_ie_len)
 {
-	u8 *delta1, *delta2;
+	const u8 *delta1, *delta2;
 	u8 multi_ssid_ie_len, ref_ssid_ie_len;
 
 	if (bssid_index == 0) {

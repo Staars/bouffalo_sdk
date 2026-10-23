@@ -25,6 +25,7 @@
 #include "common/ptksa_cache.h"
 #include "wpa_crypto/tls.h"
 #include "ap/hostapd.h"
+#include "ap/ctrl_iface_ap.h"
 #include "eap_peer/eap.h"
 #include "eapol_supp/eapol_supp_sm.h"
 #include "rsn_supp/wpa.h"

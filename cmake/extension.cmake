@@ -308,7 +308,9 @@ macro(project name)
   endif()
 
   if(EXISTS ${LINKER_SCRIPT_IN_PROPERTY})
-    set_target_properties(${proj_name}.elf PROPERTIES LINK_FLAGS "-T${SDK_DEMO_PATH}/${BUILD_DIR}/generated/linker.ld -Wl,-Map=${MAP_FILE}")
+    get_filename_component(LINKER_SCRIPT_OUTPUT "${BUILD_DIR}/generated/linker.ld"
+      ABSOLUTE BASE_DIR "${SDK_DEMO_PATH}")
+    set_target_properties(${proj_name}.elf PROPERTIES LINK_FLAGS "-T${LINKER_SCRIPT_OUTPUT} -Wl,-Map=${MAP_FILE}")
     set_target_properties(${proj_name}.elf PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT_IN_PROPERTY})
   endif()
 

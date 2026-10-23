@@ -4,6 +4,15 @@
 
 menu "C Library"
 
+config PICOLIBC
+    bool "Use Picolibc toolchain runtime"
+    default y if CHIP = "bl618dg" && CPU_MODEL = "b0"
+    default n
+    help
+      Select the Picolibc runtime and compatibility sources. Disable this
+      when the selected toolchain provides Newlib, including on BL618DG B0.
+
+
 config POSIX
     bool "POSIX API"
     default n

@@ -114,7 +114,11 @@ __attribute__((section(".fw_header"))) struct bootheader_t fw_header = {
     .basic_cfg.rsvd_1 = 0x0,             /* [10]     boot2 rollback(rsvd_1) */
     .basic_cfg.cpu_master_id = 0x0,      /* [14: 11] master id */
     .basic_cfg.notload_in_bootrom = 0x0, /* [15]     notload in bootrom */
+#ifdef CONFIG_ENABLE_IMG_CRC
+    .basic_cfg.crc_ignore = 0x0,         /* [16]     ignore crc */
+#else
     .basic_cfg.crc_ignore = 0x1,         /* [16]     ignore crc */
+#endif
 #ifndef CONFIG_ENABLE_IMG_HASH
     .basic_cfg.hash_ignore = 0x1,        /* [17]     hash ignore */
 #else

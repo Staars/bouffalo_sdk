@@ -107,9 +107,14 @@
 #if MACSW_WFA
 #define CONFIG_WNM_AP
 #endif
+#ifndef CONFIG_WIFI6_NO_WPS
 #define CONFIG_WPS
 #define EAP_WSC
+#endif
 #if MACSW_P2P
+#ifdef CONFIG_WIFI6_NO_WPS
+#error "Wi-Fi Direct requires Wi-Fi Protected Setup"
+#endif
 #define CONFIG_P2P
 #define CONFIG_WPS
 #define CONFIG_GAS

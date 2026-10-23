@@ -105,6 +105,13 @@ endmenu
 
 menu "Legacy BSP compatibility"
 
+config ENABLE_IMG_CRC
+    bool "Enable image header CRC verification"
+    default n
+    help
+      Clear the boot header CRC-ignore flag so boot2 verifies the header CRC.
+      The firmware postprocessor calculates this CRC when preparing the image.
+
 config ENABLE_IMG_HASH
     bool "Enable image hash"
     default n

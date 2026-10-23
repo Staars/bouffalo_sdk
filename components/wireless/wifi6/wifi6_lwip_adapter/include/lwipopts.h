@@ -93,22 +93,31 @@ extern int sys_current_is_tcpip(void);
 
 #define PBUF_LINK_ENCAPSULATION_HLEN  388
 
-#define IP_REASS_MAX_PBUFS            (FHOST_RX_BUF_CNT - 2)
+/* Match fhost_config_buffer.c without using its private RX-buffer macro. */
+#if MACSW_AMPDU_RX
+#ifdef CFG_ADHOC_ENABLE
+#define IP_REASS_MAX_PBUFS            CFG_REORD_BUF
+#else
+#define IP_REASS_MAX_PBUFS            (CFG_BARX * CFG_REORD_BUF)
+#endif
+#else
+#define IP_REASS_MAX_PBUFS            2
+#endif
 
 #define MEMP_NUM_NETBUF               32
 #define MEMP_NUM_NETCONN              16
 #define MEMP_NUM_UDP_PCB              16
 #define MEMP_NUM_REASSDATA            LWIP_MIN((IP_REASS_MAX_PBUFS), 5)
 
-#if MACSW_TXDESC_CNT0 > MACSW_TXDESC_CNT1
-#define MAC_TXQ_DEPTH_0_1             MACSW_TXDESC_CNT0
+#if CFG_TXDESC0 > CFG_TXDESC1
+#define MAC_TXQ_DEPTH_0_1             CFG_TXDESC0
 #else
-#define MAC_TXQ_DEPTH_0_1             MACSW_TXDESC_CNT1
+#define MAC_TXQ_DEPTH_0_1             CFG_TXDESC1
 #endif
-#if MACSW_TXDESC_CNT2 > MACSW_TXDESC_CNT3
-#define MAC_TXQ_DEPTH_2_3             MACSW_TXDESC_CNT2
+#if CFG_TXDESC2 > CFG_TXDESC3
+#define MAC_TXQ_DEPTH_2_3             CFG_TXDESC2
 #else
-#define MAC_TXQ_DEPTH_2_3             MACSW_TXDESC_CNT3
+#define MAC_TXQ_DEPTH_2_3             CFG_TXDESC3
 #endif
 #if MAC_TXQ_DEPTH_0_1 > MAC_TXQ_DEPTH_2_3
 #define MAC_TXQ_DEPTH                 MAC_TXQ_DEPTH_0_1
@@ -116,7 +125,7 @@ extern int sys_current_is_tcpip(void);
 #define MAC_TXQ_DEPTH                 MAC_TXQ_DEPTH_2_3
 #endif
 #if MACSW_AMPDU_RX
-#define MAC_RXQ_DEPTH                 MACSW_AMPDU_RX_BUF_SIZE
+#define MAC_RXQ_DEPTH                 CFG_REORD_BUF
 #else
 #define MAC_RXQ_DEPTH                 4
 #endif
