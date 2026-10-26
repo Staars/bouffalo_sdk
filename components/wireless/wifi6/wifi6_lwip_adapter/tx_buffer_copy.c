@@ -1,7 +1,6 @@
 #include "stddef.h"
 #include "assert.h"
 #include <string.h>
-#include "mac_frame.h"
 
 #ifndef CO_ALIGN4_HI
 #define CO_ALIGN4_HI(val) (((val)+3)&~3)
@@ -11,6 +10,8 @@
 #endif
 #include "net_al.h"
 #include "lwip/tcpip.h"
+/* After lwipopts.h/macsw.h, so MACSW_* build flags are not defaulted to 0. */
+#include "mac_frame.h"
 #include "tx_buffer_copy.h"
 
 #define bc_dbg(fmt, ...) do{}while(0)

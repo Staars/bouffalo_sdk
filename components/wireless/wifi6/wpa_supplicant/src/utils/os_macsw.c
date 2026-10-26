@@ -12,6 +12,10 @@
 //#include <bl_sec.h>
 #include <bflb_sec_trng.h>
 
+/* Provided by the Wi-Fi 6 lwIP adapter (net_tg_al.h, net_iperf_al_priv.h). */
+int get_time_SINCE_EPOCH(uint32_t *sec, uint32_t *usec);
+int get_time_SINCE_BOOT(uint32_t *sec, uint32_t *usec);
+
 void os_sleep(os_time_t sec, os_time_t usec)
 {
 	uint32_t delay;

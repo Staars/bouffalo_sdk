@@ -45,20 +45,25 @@ extern void *__bflb_log_recorder_pointer;
 #define BFLB_LOG_TAG           NULL
 #endif
 
+/* Type-only sink: disabled logs stay unevaluated sizeof operands, so their
+ * arguments remain referenced but no call or string reaches the image. */
+int bflb_log_discard(const char *fmt, ...);
+#define BFLB_LOG_DISCARD(...) ((void)sizeof(bflb_log_discard(__VA_ARGS__)))
+
 #ifdef CONFIG_LOG_DISABLE
 
-#define LOG_F(...)  ((void)0)
-#define LOG_RF(...) ((void)0)
-#define LOG_E(...)  ((void)0)
-#define LOG_RE(...) ((void)0)
-#define LOG_W(...)  ((void)0)
-#define LOG_RW(...) ((void)0)
-#define LOG_I(...)  ((void)0)
-#define LOG_RI(...) ((void)0)
-#define LOG_D(...)  ((void)0)
-#define LOG_RD(...) ((void)0)
-#define LOG_T(...)  ((void)0)
-#define LOG_RT(...) ((void)0)
+#define LOG_F(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RF(...) BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_E(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RE(...) BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_W(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RW(...) BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_I(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RI(...) BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_D(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RD(...) BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_T(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RT(...) BFLB_LOG_DISCARD(__VA_ARGS__)
 #define LOG_FLUSH() ((void)0)
 
 #else
@@ -69,48 +74,48 @@ extern void *__bflb_log_recorder_pointer;
 #define LOG_F(...)  BFLB_LOG_F((void *)&__bflb_log_recorder, __VA_ARGS__)
 #define LOG_RF(...) BFLB_LOG_RF((void *)&__bflb_log_recorder, __VA_ARGS__)
 #else
-#define LOG_F(...)  ((void)0)
-#define LOG_RF(...) ((void)0)
+#define LOG_F(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RF(...) BFLB_LOG_DISCARD(__VA_ARGS__)
 #endif
 
 #if (CONFIG_LOG_LEVEL >= 1)
 #define LOG_E(...)  BFLB_LOG_E((void *)&__bflb_log_recorder, __VA_ARGS__)
 #define LOG_RE(...) BFLB_LOG_RE((void *)&__bflb_log_recorder, __VA_ARGS__)
 #else
-#define LOG_E(...)  ((void)0)
-#define LOG_RE(...) ((void)0)
+#define LOG_E(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RE(...) BFLB_LOG_DISCARD(__VA_ARGS__)
 #endif
 
 #if (CONFIG_LOG_LEVEL >= 2)
 #define LOG_W(...)  BFLB_LOG_W((void *)&__bflb_log_recorder, __VA_ARGS__)
 #define LOG_RW(...) BFLB_LOG_RW((void *)&__bflb_log_recorder, __VA_ARGS__)
 #else
-#define LOG_W(...)  ((void)0)
-#define LOG_RW(...) ((void)0)
+#define LOG_W(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RW(...) BFLB_LOG_DISCARD(__VA_ARGS__)
 #endif
 
 #if (CONFIG_LOG_LEVEL >= 3)
 #define LOG_I(...)  BFLB_LOG_I((void *)&__bflb_log_recorder, __VA_ARGS__)
 #define LOG_RI(...) BFLB_LOG_RI((void *)&__bflb_log_recorder, __VA_ARGS__)
 #else
-#define LOG_I(...)  ((void)0)
-#define LOG_RI(...) ((void)0)
+#define LOG_I(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RI(...) BFLB_LOG_DISCARD(__VA_ARGS__)
 #endif
 
 #if (CONFIG_LOG_LEVEL >= 4)
 #define LOG_D(...)  BFLB_LOG_D((void *)&__bflb_log_recorder, __VA_ARGS__)
 #define LOG_RD(...) BFLB_LOG_RD((void *)&__bflb_log_recorder, __VA_ARGS__)
 #else
-#define LOG_D(...)  ((void)0)
-#define LOG_RD(...) ((void)0)
+#define LOG_D(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RD(...) BFLB_LOG_DISCARD(__VA_ARGS__)
 #endif
 
 #if (CONFIG_LOG_LEVEL >= 5)
 #define LOG_T(...)  BFLB_LOG_T((void *)&__bflb_log_recorder, __VA_ARGS__)
 #define LOG_RT(...) BFLB_LOG_RT((void *)&__bflb_log_recorder, __VA_ARGS__)
 #else
-#define LOG_T(...)  ((void)0)
-#define LOG_RT(...) ((void)0)
+#define LOG_T(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RT(...) BFLB_LOG_DISCARD(__VA_ARGS__)
 #endif
 
 #define LOG_FLUSH() bflb_log_flush(&__bflb_log_recorder)
@@ -125,8 +130,8 @@ extern void *__bflb_log_recorder_pointer;
 #endif
 #define LOG_RF(...) printf(__VA_ARGS__)
 #else
-#define LOG_F(...)  ((void)0)
-#define LOG_RF(...) ((void)0)
+#define LOG_F(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RF(...) BFLB_LOG_DISCARD(__VA_ARGS__)
 #endif
 
 #if (CONFIG_LOG_LEVEL >= 1)
@@ -137,8 +142,8 @@ extern void *__bflb_log_recorder_pointer;
 #endif
 #define LOG_RE(...) printf(__VA_ARGS__)
 #else
-#define LOG_E(...)  ((void)0)
-#define LOG_RE(...) ((void)0)
+#define LOG_E(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RE(...) BFLB_LOG_DISCARD(__VA_ARGS__)
 #endif
 
 #if (CONFIG_LOG_LEVEL >= 2)
@@ -149,8 +154,8 @@ extern void *__bflb_log_recorder_pointer;
 #endif
 #define LOG_RW(...) printf(__VA_ARGS__)
 #else
-#define LOG_W(...)  ((void)0)
-#define LOG_RW(...) ((void)0)
+#define LOG_W(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RW(...) BFLB_LOG_DISCARD(__VA_ARGS__)
 #endif
 
 #if (CONFIG_LOG_LEVEL >= 3)
@@ -161,8 +166,8 @@ extern void *__bflb_log_recorder_pointer;
 #endif
 #define LOG_RI(...) printf(__VA_ARGS__)
 #else
-#define LOG_I(...)  ((void)0)
-#define LOG_RI(...) ((void)0)
+#define LOG_I(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RI(...) BFLB_LOG_DISCARD(__VA_ARGS__)
 #endif
 
 #if (CONFIG_LOG_LEVEL >= 4)
@@ -173,8 +178,8 @@ extern void *__bflb_log_recorder_pointer;
 #endif
 #define LOG_RD(...) printf(__VA_ARGS__)
 #else
-#define LOG_D(...)  ((void)0)
-#define LOG_RD(...) ((void)0)
+#define LOG_D(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RD(...) BFLB_LOG_DISCARD(__VA_ARGS__)
 #endif
 
 #if (CONFIG_LOG_LEVEL >= 5)
@@ -185,8 +190,8 @@ extern void *__bflb_log_recorder_pointer;
 #endif
 #define LOG_RT(...) printf(__VA_ARGS__)
 #else
-#define LOG_T(...)  ((void)0)
-#define LOG_RT(...) ((void)0)
+#define LOG_T(...)  BFLB_LOG_DISCARD(__VA_ARGS__)
+#define LOG_RT(...) BFLB_LOG_DISCARD(__VA_ARGS__)
 #endif
 
 #define LOG_FLUSH() ((void)0)
