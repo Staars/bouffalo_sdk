@@ -10,7 +10,9 @@
 
 #include "bflb_gpio.h"
 #include "board_rf.h"
+#ifdef CONFIG_SHELL
 #include "shell.h"
+#endif
 
 #include "wl_api.h"
 #include "rfparam_adapter.h"
@@ -335,6 +337,7 @@ int cmd_board_rf_dual_ant_init(int argc, char **argv)
     return 0;
 }
 
+#ifdef CONFIG_SHELL
 SHELL_CMD_EXPORT_ALIAS(cmd_board_rf_single_init, board_rf_single_ant_init, init single ant);
 #ifdef CONFIG_WIFI6
 SHELL_CMD_EXPORT_ALIAS(cmd_board_rf_single_ant_spdt_init, board_rf_single_ant_spdt_init, init single ant/spdt);
@@ -342,5 +345,6 @@ SHELL_CMD_EXPORT_ALIAS(cmd_board_rf_single_ant_spdt_init, board_rf_single_ant_sp
 SHELL_CMD_EXPORT_ALIAS(cmd_board_rf_single_ant_spdt_bt_init, board_rf_single_ant_spdt_bt_init, init single ant/spdt to use bt path);
 SHELL_CMD_EXPORT_ALIAS(cmd_board_rf_single_ant_spdt_2g_init, board_rf_single_ant_spdt_2g_init, init single ant/spdt to use 2g path);
 SHELL_CMD_EXPORT_ALIAS(cmd_board_rf_dual_ant_init, board_rf_dual_ant_init, init dual ant hardware);
+#endif
 
 #endif
