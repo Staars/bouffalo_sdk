@@ -62,12 +62,6 @@ typedef struct {
     int16_t  ra_offset;
 } unwind_entry_t;
 
-/* Non-standard RA entry */
-typedef struct {
-    uint16_t entry_idx;
-    int16_t  ra_offset;
-} non_standard_ra_entry_t;
-
 /* Segment descriptor */
 typedef struct {
     uint16_t segment_base;
@@ -76,27 +70,33 @@ typedef struct {
 } segment_desc_t;
 
 /* Global state (non-standard RA table and entries data) */
-static non_standard_ra_entry_t *g_non_standard_ra_table = NULL;
+static const uint8_t *g_non_standard_ra_table = NULL;
 static uint16_t g_num_non_standard_ra_entries = 0;
 static const uint8_t *g_entries_data = NULL;
 static const uint8_t *g_segment_table_start = NULL;  /* For parsing segments on demand */
 static uint32_t g_num_segments = 0;
+
+/* Packed CFI fields are little-endian and may have any byte alignment. */
+static uint16_t read_u16_le(const uint8_t *ptr)
+{
+    return (uint16_t)((uint16_t)ptr[0] | ((uint16_t)ptr[1] << 8));
+}
 
 /**
  * Initialize non-standard RA table from binary data
  */
 static bool init_non_standard_ra_table(const uint8_t **ptr)
 {
-    g_num_non_standard_ra_entries = *(uint16_t*)*ptr;
+    g_num_non_standard_ra_entries = read_u16_le(*ptr);
     *ptr += 2;
 
     if (g_num_non_standard_ra_entries > 0) {
-        g_non_standard_ra_table = (non_standard_ra_entry_t*)*ptr;
+        g_non_standard_ra_table = *ptr;
         *ptr += g_num_non_standard_ra_entries * 4;
     }
 
     /* Skip terminator */
-    uint16_t term = *(uint16_t*)*ptr;
+    uint16_t term = read_u16_le(*ptr);
     if (term == 0xFFFF) {
         *ptr += 2;
     } else {
@@ -117,10 +117,11 @@ static int16_t lookup_non_standard_ra(uint16_t entry_idx)
 
     while (left <= right) {
         int mid = (left + right) / 2;
-        uint16_t mid_idx = g_non_standard_ra_table[mid].entry_idx;
+        const uint8_t *ptr = g_non_standard_ra_table + mid * 4;
+        uint16_t mid_idx = read_u16_le(ptr);
 
         if (mid_idx == entry_idx) {
-            return g_non_standard_ra_table[mid].ra_offset;
+            return (int16_t)read_u16_le(ptr + 2);
         } else if (mid_idx < entry_idx) {
             left = mid + 1;
         } else {
@@ -136,9 +137,10 @@ static int16_t lookup_non_standard_ra(uint16_t entry_idx)
  */
 static inline bool is_segment_terminator(const uint8_t *ptr)
 {
-    return (*(uint32_t*)ptr == 0xFFFFFFFF &&
-            *(uint32_t*)(ptr + 4) == 0xFFFFFFFF &&
-            *(uint32_t*)(ptr + 8) == 0xFFFFFFFF);
+    for (unsigned int i = 0; i < 12; i++) {
+        if (ptr[i] != 0xFF) return false;
+    }
+    return true;
 }
 
 /**
@@ -160,12 +162,12 @@ static bool lookup_segment(uint16_t segment_base, segment_desc_t *segment)
     while (left < right) {
         uint32_t mid = left + (right - left) / 2;
         const uint8_t *ptr = g_segment_table_start + mid * 6;
-        uint16_t mid_segment_base = *(uint16_t *)ptr;
+        uint16_t mid_segment_base = read_u16_le(ptr);
 
         if (mid_segment_base == segment_base) {
             segment->segment_base = mid_segment_base;
-            segment->start_entry_idx = *(uint16_t *)(ptr + 2);
-            segment->end_entry_idx = *(uint16_t *)(ptr + 4);
+            segment->start_entry_idx = read_u16_le(ptr + 2);
+            segment->end_entry_idx = read_u16_le(ptr + 4);
             return true;
         }
 
@@ -264,9 +266,9 @@ bool find_unwind_entry(uint32_t pc, unwind_entry_t *entry)
 
         /* Read 6-byte entry at index mid */
         const uint8_t *entry_ptr = g_entries_data + mid * 6;
-        uint16_t offset_field = *(uint16_t*)entry_ptr;
-        uint16_t frame_size_words = *(uint16_t*)(entry_ptr + 2);
-        uint16_t func_size = *(uint16_t*)(entry_ptr + 4);
+        uint16_t offset_field = read_u16_le(entry_ptr);
+        uint16_t frame_size_words = read_u16_le(entry_ptr + 2);
+        uint16_t func_size = read_u16_le(entry_ptr + 4);
         (void) frame_size_words;
         (void) func_size;
 
@@ -298,9 +300,9 @@ bool find_unwind_entry(uint32_t pc, unwind_entry_t *entry)
 
     /* Read the best matching entry (6 bytes) */
     const uint8_t *entry_ptr = g_entries_data + best_match * 6;
-    uint16_t offset_field = *(uint16_t*)entry_ptr;
-    uint16_t frame_size_words = *(uint16_t*)(entry_ptr + 2);
-    uint16_t func_size = *(uint16_t*)(entry_ptr + 4);
+    uint16_t offset_field = read_u16_le(entry_ptr);
+    uint16_t frame_size_words = read_u16_le(entry_ptr + 2);
+    uint16_t func_size = read_u16_le(entry_ptr + 4);
 
     /* The preceding entry may belong to a different function.  Leaf functions
      * are omitted from the table, so validate the complete [start, end) range. */
